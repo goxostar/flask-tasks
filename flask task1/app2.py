@@ -1,12 +1,8 @@
 import json
 from flask import Flask, g
-import flask_login
 from flask_oidc import OpenIDConnect
 
 app = Flask(__name__)
-
-login_manager = flask_login.LoginManager()
-login_manager.init_app(app)
 
 app.config.update({
     'SECRET_KEY': 'goktuggoktuggoktuggoktuggoktuggoktuggoktuggoktug',
