@@ -1,12 +1,12 @@
 import json
-from flask import Flask, g
+from flask import Flask, g, render_template, url_for
 import flask_login
 from flask_oidc import OpenIDConnect
 
 app = Flask(__name__)
 
-login_manager = flask_login.LoginManager()
-login_manager.init_app(app)
+#login_manager = flask_login.LoginManager()
+#login_manager.init_app(app)
 
 app.config.update({
     'SECRET_KEY': 'goktuggoktuggoktuggoktuggoktuggoktuggoktuggoktug',
@@ -27,8 +27,9 @@ def hello_world():
         return ('Hi, %s, <a href="/dashboard">See dashboard</a> '
                 '<a href="/logout">Log out</a>') % \
             oidc.user_getfield('email')
-    else:
-        return 'Welcome Newcomer, <a href="/dashboard">Log in</a>'
+    else:   
+        return render_template('home.html')
+        #return 'Welcome Newcomer, <a href="/dashboard">Log in</a>'
 
 
 @app.route('/dashboard')
