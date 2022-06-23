@@ -1,12 +1,17 @@
 import json
-from flask import Flask, g, redirect, render_template, flash, url_for
+from flask import Flask, g, redirect, render_template, flash, url_for, session
 from flask_oidc import OpenIDConnect
 from keycloak import KeycloakOpenID, KeycloakAdmin
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
+from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user
 
 app = Flask(__name__)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
 
 class LoginForm(FlaskForm):
   username = StringField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
