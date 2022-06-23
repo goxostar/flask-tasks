@@ -10,22 +10,13 @@ from flask_login import UserMixin, login_user, LoginManager, login_required, log
 
 app = Flask(__name__)
 
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
 
-
-url = "http://localhost:8080/auth/realms/demo-realm/protocol/openid-connect/token"
- 
+# Login Request To Keycloak API - Response = Status, Access Token, Refresh Token
+url = "http://localhost:8080/auth/realms/demo-realm/protocol/openid-connect/token" 
 header = {    
     "Content-Type":"application/x-www-form-urlencoded"    
     }
- 
-rr ="grant_type=client_credentials&client_id=client1&client_secret=f720daa4-059b-4ba6-b34d-e898fab1e6ae"
-response = requests.post(url, data=rr, headers=header, verify=False)
- 
-print("Status Code", response.status_code)
-print("JSON Response ", response.json())
+
 
 class LoginForm(FlaskForm):
   username = StringField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"placeholder": "Username"})
@@ -45,6 +36,13 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
+        # Login Request with User Input
+        username=form.username.data
+        password=form.password.data
+        rr = f"client_id=client1&username={username}&password={password}&grant_type=password&client_secret=f720daa4-059b-4ba6-b34d-e898fab1e6ae"
+        response = requests.post(url, data=rr, headers=header, verify=False)
+        print("Status Code", response.status_code)
+        print("JSON Response ", response.json())
           
         return render_template('login.html',form=form)
 
