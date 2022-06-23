@@ -1,4 +1,5 @@
 import json
+from os import access
 import requests
 from flask import Flask, g, redirect, render_template, flash, url_for, session
 from flask_oidc import OpenIDConnect
@@ -33,20 +34,56 @@ app.config.update({
 
 @app.route('/login', methods=['GET','POST'])
 def login():
+
+    # Access Code Variable for Authorization
+    with open('access_token.json', 'r') as f:
+        access_token_from_json = json.load(f)
+
+    if access_token_from_json['access_token']:
+            return redirect(url_for('dashboard'))
+
     form = LoginForm()
 
-    if form.validate_on_submit():
+    if form.validate_on_submit():        
+            
         # Login Request with User Input
         username=form.username.data
         password=form.password.data
         rr = f"client_id=client1&username={username}&password={password}&grant_type=password&client_secret=f720daa4-059b-4ba6-b34d-e898fab1e6ae"
         response = requests.post(url, data=rr, headers=header, verify=False)
-        print("Status Code", response.status_code)
-        print("JSON Response ", response.json())
-          
-        return render_template('login.html',form=form)
+        #print("Status Code", response.status_code)
+        #print("JSON Response ", response.json())
+
+        if response.status_code == 200:
+            access_token = response.json()['access_token']
+            dictionary ={
+            "access_token" : access_token
+            }
+            json_object = json.dumps(dictionary, indent = 1)
+            with open("access_token.json", "w") as outfile:
+                outfile.write(json_object)
+            return redirect(url_for('dashboard'))               
+                 
 
     return render_template('login.html',form=form)
+
+@app.route('/dashboard', methods=['GET','POST'])
+def dashboard(): 
+
+    # Access Code Variable for Authorization
+    with open('access_token.json', 'r') as f:
+        access_token_from_json = json.load(f)
+
+    if access_token_from_json['access_token']:
+        return render_template('dashboard.html')
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/', methods=['GET','POST'])
+def index(): 
+
+    return render_template('index.html')
 
 
 if __name__ == '__main__':
