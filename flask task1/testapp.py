@@ -19,6 +19,7 @@ header = {
     }
 
 
+# Login Form for User Input
 class LoginForm(FlaskForm):
   username = StringField(validators=[InputRequired(), Length(min=1, max=20)], render_kw={"placeholder": "Username"})
 
@@ -36,6 +37,7 @@ app.config.update({
 def login():
 
     # Access Code Variable for Authorization
+    # Check if user already logged in? 
     with open('access_token.json', 'r') as f:
         access_token_from_json = json.load(f)
 
@@ -54,6 +56,7 @@ def login():
         #print("Status Code", response.status_code)
         #print("JSON Response ", response.json())
 
+        # if status 200 (OK) -> write access token and login
         if response.status_code == 200:
             access_token = response.json()['access_token']
             dictionary ={
@@ -71,6 +74,7 @@ def login():
 def dashboard(): 
 
     # Access Code Variable for Authorization
+    # Check if user logged in? or deny and direct to login page
     with open('access_token.json', 'r') as f:
         access_token_from_json = json.load(f)
 
