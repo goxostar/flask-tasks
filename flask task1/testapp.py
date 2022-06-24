@@ -104,6 +104,13 @@ def index():
 @app.route('/register', methods=['GET','POST'])
 def register(): 
 
+    #Check if user already logged in?
+    with open('access_token.json', 'r') as f:
+        access_token_from_json = json.load(f)
+
+    if access_token_from_json['access_token']:
+            return redirect(url_for('dashboard'))
+
     form2 = RegisterForm()
 
     if form2.validate_on_submit():       
