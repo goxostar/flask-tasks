@@ -27,6 +27,16 @@ class LoginForm(FlaskForm):
 
   submit = SubmitField('Login')
 
+# Register Form for User Input
+class RegisterForm(FlaskForm):
+  username = StringField(validators=[InputRequired(), Length(min=1, max=20)], render_kw={"placeholder": "Username"})
+  firstName = StringField(validators=[InputRequired(), Length(min=1, max=20)], render_kw={"placeholder": "First Name"})
+  lastName = StringField(validators=[InputRequired(), Length(min=1, max=20)], render_kw={"placeholder": "Last Name"})
+  email = StringField(validators=[InputRequired(), Length(min=1, max=50)], render_kw={"placeholder": "Email"})
+  password = PasswordField(validators=[InputRequired(), Length(min=1, max=20)], render_kw={"placeholder": "Password"})
+
+  submit = SubmitField('Register')
+
 app.config.update({
     'SECRET_KEY': 'goktuggoktuggoktuggoktuggoktuggoktuggoktuggoktug',
     'TESTING': True,
@@ -93,7 +103,12 @@ def index():
 @app.route('/register', methods=['GET','POST'])
 def register(): 
 
-    return render_template('index.html')
+    form2 = RegisterForm()
+
+    if form2.validate_on_submit(): 
+        return render_template('register.html', form2=form2)
+
+    return render_template('register.html', form2=form2)
 
 
 if __name__ == '__main__':
