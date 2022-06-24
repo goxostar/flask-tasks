@@ -5,6 +5,7 @@ from flask import Flask, g, redirect, render_template, flash, url_for, session
 from flask_oidc import OpenIDConnect
 from keycloak import KeycloakOpenID, KeycloakAdmin
 from flask_wtf import FlaskForm
+from sqlalchemy import null
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user
@@ -37,6 +38,11 @@ class RegisterForm(FlaskForm):
   password = PasswordField(validators=[InputRequired(), Length(min=1, max=20)], render_kw={"placeholder": "Password"})
 
   submit = SubmitField('Register')
+
+# Logout Form 
+class LogoutForm(FlaskForm):  
+
+  submit = SubmitField('Logout')
 
 app.config.update({
     'SECRET_KEY': 'goktuggoktuggoktuggoktuggoktuggoktuggoktuggoktug',
@@ -83,6 +89,8 @@ def login():
 
 @app.route('/dashboard', methods=['GET','POST'])
 def dashboard(): 
+
+    form3 = LogoutForm()
 
     # Access Code Variable for Authorization
     # Check if user logged in? or deny and direct to login page
@@ -147,6 +155,25 @@ def register():
         
 
     return render_template('register.html', form2=form2)
+
+
+@app.route('/logout', methods=['GET','POST'])
+def logout(): 
+
+    with open('access_token.json', 'r') as f:
+        access_token_from_json = json.load(f)
+
+    if access_token_from_json['access_token']:
+        dictionary ={
+            "access_token" : ""
+            }
+        json_object = json.dumps(dictionary, indent = 1)
+        with open("access_token.json", "w") as outfile:
+            outfile.write(json_object)
+        return redirect(url_for('index')) 
+
+
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
