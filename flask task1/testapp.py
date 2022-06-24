@@ -14,6 +14,7 @@ app = Flask(__name__)
 
 # Login Request To Keycloak API - Response = Status, Access Token, Refresh Token
 url = "http://localhost:8080/auth/realms/demo-realm/protocol/openid-connect/token" 
+register_url = "http://localhost:8080/auth/admin/realms/demo-realm/users"
 header = {    
     "Content-Type":"application/x-www-form-urlencoded"    
     }
@@ -105,19 +106,38 @@ def register():
 
     form2 = RegisterForm()
 
-    # Getting Admin Access Code for User Creation
-    rr = f"client_id=admin-cli&grant_type=client_credentials&client_secret=bb00d3d2-6aed-4de6-87b5-0f0c68475eba"
-    response = requests.post(url, data=rr, headers=header, verify=False)
-    admin_access_token = response.json()['access_token']   
+    if form2.validate_on_submit():       
 
-    header_register = {    
-    "Content-Type":"application/json",
-    "Authorization": f"Bearer {admin_access_token}"    
-    }
+        # Getting Admin Access Code for User Creation
+        rr = f"client_id=admin-cli&grant_type=client_credentials&client_secret=bb00d3d2-6aed-4de6-87b5-0f0c68475eba"
+        response = requests.post(url, data=rr, headers=header, verify=False)
+        admin_access_token = response.json()['access_token']   
+
+        header_register = {    
+        "Content-Type":"application/json",
+        "Authorization": f"Bearer {admin_access_token}"    
+        }
 
 
-    if form2.validate_on_submit(): 
-        return render_template('register.html', form2=form2)
+        register_data = {
+            "enabled": True,
+            "username": "{}".format(form2.username.data),
+            "firstName": "{}".format(form2.firstName.data),
+            "lastName": "{}".format(form2.lastName.data),
+            "email": "{}".format(form2.email.data),
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "{}".format(form2.password.data),
+                    "temporary": False
+                }
+            ],
+            "groups": []
+        }
+
+        response_register = requests.post(register_url, headers=header_register, json=register_data, verify=False)
+        return redirect(url_for('login'))   
+        
 
     return render_template('register.html', form2=form2)
 
