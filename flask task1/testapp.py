@@ -105,6 +105,17 @@ def register():
 
     form2 = RegisterForm()
 
+    # Getting Admin Access Code for User Creation
+    rr = f"client_id=admin-cli&grant_type=client_credentials&client_secret=bb00d3d2-6aed-4de6-87b5-0f0c68475eba"
+    response = requests.post(url, data=rr, headers=header, verify=False)
+    admin_access_token = response.json()['access_token']   
+
+    header_register = {    
+    "Content-Type":"application/json",
+    "Authorization": f"Bearer {admin_access_token}"    
+    }
+
+
     if form2.validate_on_submit(): 
         return render_template('register.html', form2=form2)
 
