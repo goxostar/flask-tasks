@@ -15,8 +15,8 @@ testapp = Flask(__name__)
 
 
 # Login Request To Keycloak API - Response = Status, Access Token, Refresh Token
-url = "http://localhost:8080/auth/realms/demo-realm/protocol/openid-connect/token" 
-register_url = "http://localhost:8080/auth/admin/realms/demo-realm/users"
+url = "http://host.docker.internal:8080/auth/realms/demo-realm/protocol/openid-connect/token" 
+register_url = "http://host.docker.internal:8080/auth/admin/realms/demo-realm/users"
 header = {    
     "Content-Type":"application/x-www-form-urlencoded"    
     }
