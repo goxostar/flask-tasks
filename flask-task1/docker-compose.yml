@@ -1,0 +1,18 @@
+version: '2'
+services:
+  web:
+    build: .
+    ports:
+      - '5000:5000'
+    volumes:
+      - .:/app
+    depends_on:
+      - keycloak
+  keycloak:
+    container_name: keycloak
+    image: jboss/keycloak:13.0.1
+    ports:
+      - '8080:8080'
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
