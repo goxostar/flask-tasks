@@ -1,12 +1,20 @@
+# start by pulling the python image
 FROM python:3.10.5
 
-COPY requirements.txt requirements.txt
+# copy the requirements file into the image
+COPY ./requirements.txt /app/requirements.txt
 
-RUN pip install -U -r requirements.txt
+# switch working directory
+WORKDIR /app
 
-COPY . .
+# install the dependencies and packages in the requirements file
+RUN pip install -r requirements.txt
 
-ENV FLASK_APP=testapp.py
-EXPOSE 5000 
+# copy every content from the local file to the image
+COPY . /app
+EXPOSE 5000
 
-CMD ["python", "testapp.py", "--host=0.0.0.0"]
+# configure the container to run in an executed manner
+ENTRYPOINT [ "python" ]
+
+CMD ["testapp.py" ]

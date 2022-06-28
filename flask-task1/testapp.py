@@ -1,4 +1,5 @@
 import json
+import os
 from os import access
 import requests
 from flask import Flask, g, redirect, render_template, flash, url_for, session
@@ -10,7 +11,7 @@ from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user
 
-app = Flask(__name__)
+testapp = Flask(__name__)
 
 
 # Login Request To Keycloak API - Response = Status, Access Token, Refresh Token
@@ -44,13 +45,13 @@ class LogoutForm(FlaskForm):
 
   submit = SubmitField('Logout')
 
-app.config.update({
+testapp.config.update({
     'SECRET_KEY': 'goktuggoktuggoktuggoktuggoktuggoktuggoktuggoktug',
     'TESTING': True,
     'DEBUG': True,    
 })
 
-@app.route('/login', methods=['GET','POST'])
+@testapp.route('/login', methods=['GET','POST'])
 def login():
 
     # Access Code Variable for Authorization
@@ -87,7 +88,7 @@ def login():
 
     return render_template('login.html',form=form)
 
-@app.route('/dashboard', methods=['GET','POST'])
+@testapp.route('/dashboard', methods=['GET','POST'])
 def dashboard(): 
 
     form3 = LogoutForm()
@@ -103,13 +104,13 @@ def dashboard():
         return redirect(url_for('login'))
 
 
-@app.route('/', methods=['GET','POST'])
+@testapp.route('/', methods=['GET','POST'])
 def index(): 
 
     return render_template('index.html')
 
 
-@app.route('/register', methods=['GET','POST'])
+@testapp.route('/register', methods=['GET','POST'])
 def register(): 
 
     #Check if user already logged in?
@@ -157,7 +158,7 @@ def register():
     return render_template('register.html', form2=form2)
 
 
-@app.route('/logout', methods=['GET','POST'])
+@testapp.route('/logout', methods=['GET','POST'])
 def logout(): 
 
     with open('access_token.json', 'r') as f:
@@ -177,4 +178,5 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    testapp.run(debug=True, host='0.0.0.0', port=port)
