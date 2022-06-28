@@ -68,7 +68,7 @@ def login():
         # Login Request with User Input
         username=form.username.data
         password=form.password.data
-        rr = f"client_id=client1&username={username}&password={password}&grant_type=password&client_secret=f720daa4-059b-4ba6-b34d-e898fab1e6ae"
+        rr = f"client_id=client1&username={username}&password={password}&grant_type=password&client_secret=d7bfada1-0808-49b8-8f9c-d37f40497fa5"
         response = requests.post(url, data=rr, headers=header, verify=False)
         #print("Status Code", response.status_code)
         #print("JSON Response ", response.json())
@@ -124,7 +124,7 @@ def register():
     if form2.validate_on_submit():       
 
         # Getting Admin Access Code for User Creation
-        rr = f"client_id=admin-cli&grant_type=client_credentials&client_secret=bb00d3d2-6aed-4de6-87b5-0f0c68475eba"
+        rr = f"client_id=admin-cli&grant_type=client_credentials&client_secret=7b24931a-052d-448d-ae63-81bfa0e4fc76"
         response = requests.post(url, data=rr, headers=header, verify=False)
         admin_access_token = response.json()['access_token']   
 
