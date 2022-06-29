@@ -15,8 +15,6 @@ services:
       - ./imports:/opt/jboss/keycloak/imports
     container_name: keycloak
     image: jboss/keycloak:13.0.1
-    ports:
-      - 8080:8080
     expose:
       - 8080
     environment:
