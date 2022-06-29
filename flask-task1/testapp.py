@@ -15,8 +15,8 @@ testapp = Flask(__name__)
 
 
 # Login Request To Keycloak API - Response = Status, Access Token, Refresh Token
-url = "http://host.docker.internal:8080/auth/realms/demo-realm/protocol/openid-connect/token" 
-register_url = "http://host.docker.internal:8080/auth/admin/realms/demo-realm/users"
+url = "http://kc:8080/auth/realms/demo-realm/protocol/openid-connect/token" 
+register_url = "http://kc:8080/auth/admin/realms/demo-realm/users"
 header = {    
     "Content-Type":"application/x-www-form-urlencoded"    
     }
@@ -125,7 +125,7 @@ def register():
     if form2.validate_on_submit():       
 
         # Getting Admin Access Code for User Creation
-        rr = f"client_id=admin-cli&grant_type=client_credentials&client_secret=b7c2b634-792a-4ec2-84c5-71c6ae6a499a"
+        rr = f"client_id=admin-cli&grant_type=client_credentials&client_secret=8c38c724-be6d-41d9-8eab-5fe4583a6188"
         response = requests.post(url, data=rr, headers=header, verify=False)
         admin_access_token = response.json()['access_token']   
 
